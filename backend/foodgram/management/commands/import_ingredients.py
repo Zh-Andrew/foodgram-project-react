@@ -1,0 +1,30 @@
+import os
+
+from django.core.management.base import BaseCommand
+from dotenv import load_dotenv, find_dotenv
+import psycopg2
+
+from backend.settings import BASE_DIR
+
+load_dotenv(find_dotenv())
+
+
+class Command(BaseCommand):
+    help = 'Импорт ингредиентов, которые чаще всего употребляются'
+
+    def handle(self, *args, **kwargs):
+        conn = psycopg2.connect(
+            "host={0} dbname={1} user={2} password={3}".format(
+                os.getenv('DB_HOST'),
+                os.getenv('DB_NAME'),
+                os.getenv('POSTGRES_USER'),
+                os.getenv('POSTGRES_PASSWORD')
+            )
+        )
+        cur = conn.cursor()
+        csv_path = '{0}/../data/ingredients.csv'.format(BASE_DIR)
+        cur.execute(
+            "COPY foodgram_ingredient (id, name, measurement_unit) "
+            "FROM '{0}' DELIMITER ',' CSV ENCODING 'UTF8' QUOTE '\"'".format(csv_path)
+        )
+        conn.commit()
