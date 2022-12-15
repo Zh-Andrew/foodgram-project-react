@@ -94,7 +94,7 @@ class Recipe(models.Model):
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
-        ordering = ['pub_date']
+        ordering = ['-pub_date']
 
     def __str__(self):
         return self.name
@@ -145,7 +145,6 @@ class FavouriteRecipe(models.Model):
     """
     user = models.ForeignKey(
         User,
-        related_name='favourite',
         on_delete=models.CASCADE,
     )
     recipe = models.ForeignKey(
@@ -153,6 +152,10 @@ class FavouriteRecipe(models.Model):
         related_name='favourite',
         on_delete=models.CASCADE
     )
+
+    class Meta:
+        verbose_name = 'Рецепт в избранном'
+        verbose_name_plural = 'Избранные рецепты'
 
 
 class ShoppingList(models.Model):
@@ -162,7 +165,6 @@ class ShoppingList(models.Model):
     """
     user = models.ForeignKey(
         User,
-        related_name='shopping',
         on_delete=models.CASCADE
     )
     recipe = models.ForeignKey(
@@ -170,3 +172,7 @@ class ShoppingList(models.Model):
         related_name='shopping',
         on_delete=models.CASCADE
     )
+
+    class Meta:
+        verbose_name = 'Список покупок'
+        verbose_name_plural = 'Списки покупок'

@@ -1,13 +1,20 @@
-from rest_framework import viewsets, filters, permissions, status
+from django.db.models import Sum
+from django.http import HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend
+from foodgram.models import (Amount, FavouriteRecipe, Ingredient, Recipe,
+                             ShoppingList, Tag)
+from rest_framework import filters, permissions, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from foodgram.models import Tag, Ingredient, Recipe, ShoppingList, FavouriteRecipe
-from .serializers import (TagSerializer, IngredientSerializer, RecipeSerializer,
-                          RecipePostSerializer, ShoppingListSerializer,
-                          FavouriteRecipeSerializer)
-from api.pagination import LimitPagePagination
-from api.permissions import IsAdminOrOwnerOrReadOnly, IsAdminOrReadOnly
+
+from .filters import RecipeFilterSet
+from .pagination import LimitPagePagination
+from .permissions import IsAdminOrOwnerOrReadOnly, IsAdminOrReadOnly
+from .serializers import (FavouriteRecipeSerializer, IngredientSerializer,
+                          RecipePostSerializer, RecipeSerializer,
+                          ShoppingListSerializer, TagSerializer)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -26,7 +33,9 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     pagination_class = LimitPagePagination
-    permission_classes = (IsAdminOrOwnerOrReadOnly, )
+    permission_classes = [IsAdminOrOwnerOrReadOnly]
+    filter_backends = (DjangoFilterBackend, )
+    filterset_class = RecipeFilterSet
 
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PUT', 'PATCH'):
@@ -35,6 +44,30 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user,)
+
+    @action(detail=False,
+            methods=['get'],
+            permission_classes=[permissions.IsAuthenticated])
+    def download_shopping_cart(self, request):
+        ingredient_list = 'Cписок покупок:'
+        ingredients = Amount.objects.filter(
+            recipe__shopping__user=request.user
+        ).values(
+            'ingredient__name', 'ingredient__measurement_unit'
+        ).annotate(amount=Sum('amount'))
+        for num, i in enumerate(ingredients):
+            ingredient_list += (
+                f'\n{i["ingredient__name"]} - '
+                f'{i["amount"]} {i["ingredient__measurement_unit"]}'
+            )
+            if num < ingredients.count() - 1:
+                ingredient_list += ', '
+        file = 'shopping_list'
+        response = HttpResponse(
+            ingredient_list, 'Content-Type: application/pdf'
+        )
+        response['Content-Disposition'] = f'attachment; filename="{file}.pdf"'
+        return response
 
 
 class ShoppingListAPI(APIView):

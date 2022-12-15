@@ -1,7 +1,8 @@
 from django.urls import include, path
-from .views import TagViewSet, IngredientViewSet, RecipeViewSet, ShoppingListAPI, FavouriteRecipeAPI
 from rest_framework import routers
 
+from .views import (FavouriteRecipeAPI, IngredientViewSet, RecipeViewSet,
+                    ShoppingListAPI, TagViewSet)
 
 app_name = 'api'
 
@@ -18,5 +19,5 @@ urlpatterns = [
          name='shopping_cart'),
     path('recipes/<int:id>/favourite/',
          FavouriteRecipeAPI.as_view(),
-         name='favourite')
+         name='favourite'),
 ]

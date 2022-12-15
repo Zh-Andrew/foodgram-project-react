@@ -1,10 +1,9 @@
 import os
 
-from django.core.management.base import BaseCommand
-from dotenv import load_dotenv, find_dotenv
 import psycopg2
-
 from backend.settings import BASE_DIR
+from django.core.management.base import BaseCommand
+from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv())
 
@@ -25,6 +24,8 @@ class Command(BaseCommand):
         csv_path = '{0}/../data/ingredients.csv'.format(BASE_DIR)
         cur.execute(
             "COPY foodgram_ingredient (id, name, measurement_unit) "
-            "FROM '{0}' DELIMITER ',' CSV ENCODING 'UTF8' QUOTE '\"'".format(csv_path)
+            "FROM '{0}' DELIMITER ',' CSV ENCODING 'UTF8' QUOTE '\"'".format(
+                csv_path
+            )
         )
         conn.commit()

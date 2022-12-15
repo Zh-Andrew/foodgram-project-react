@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Tag, Ingredient, Recipe, Amount, FavouriteRecipe, ShoppingList
+
+from .models import (Amount, FavouriteRecipe, Ingredient, Recipe, ShoppingList,
+                     Tag)
 
 
 @admin.register(Tag)
@@ -11,32 +13,37 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit')
+    list_filter = ('name',)
     search_fields = ('^name', )
     ordering = ('name', )
 
 
+class AmountInLine(admin.TabularInline):
+    model = Amount
+    extra = 0
+
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('author', 'name', 'image', 'text', 'get_ingredients', 'get_tags', 'cooking_time')
-    ordering = ('pub_date', )
+    list_display = ('author', 'name', 'favourite')
+    search_fields = ('name', )
+    list_filter = ('author', 'name', 'tags')
+    readonly_fields = ('favourite', )
+    filter_horizontal = ('tags',)
 
-    def get_tags(self, obj):
-        return '\n'.join([t.name for t in obj.tags.all()])
+    def favourite(self, obj):
+        return obj.favourite.all().count()
 
-    def get_ingredients(self, obj):
-        return '\n'.join([i.name for i in obj.ingredients.all()])
-
-
-@admin.register(Amount)
-class AmountAdmin(admin.ModelAdmin):
-    list_display = ('ingredient', 'recipe', 'amount')
+    favourite.short_description = 'Количество добавлений в избранное'
 
 
 @admin.register(ShoppingList)
 class ShoppingListAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe')
+    search_fields = ('user', )
 
 
 @admin.register(FavouriteRecipe)
 class FavouriteRecipeAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe')
+    search_fields = ('user', 'recipe')
