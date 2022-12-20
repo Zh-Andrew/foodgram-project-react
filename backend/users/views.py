@@ -7,9 +7,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Subscription, User
+from .serializers import CustomUserSerializer
 
 
 class CustomUserViewSet(UserViewSet):
+    queryset = User.objects.all()
+    serializer_class = CustomUserSerializer
     pagination_class = LimitPagePagination
 
     @action(

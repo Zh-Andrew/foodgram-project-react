@@ -17,7 +17,7 @@ urlpatterns = [
     path('recipes/<int:id>/shopping_cart/',
          ShoppingListAPI.as_view(),
          name='shopping_cart'),
-    path('recipes/<int:id>/favourite/',
+    path('recipes/<int:id>/favorite/',
          FavouriteRecipeAPI.as_view(),
-         name='favourite'),
+         name='favorite'),
 ]

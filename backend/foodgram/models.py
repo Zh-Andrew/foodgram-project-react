@@ -19,7 +19,7 @@ class Ingredient(models.Model):
         ordering = ['name']
 
     def __str__(self):
-        return self.name
+        return {self.name}
 
 
 class Tag(models.Model):
@@ -156,6 +156,12 @@ class FavouriteRecipe(models.Model):
     class Meta:
         verbose_name = 'Рецепт в избранном'
         verbose_name_plural = 'Избранные рецепты'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_favourite_recipes'
+            )
+        ]
 
 
 class ShoppingList(models.Model):
@@ -176,3 +182,9 @@ class ShoppingList(models.Model):
     class Meta:
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_shopping_cart'
+            )
+        ]
