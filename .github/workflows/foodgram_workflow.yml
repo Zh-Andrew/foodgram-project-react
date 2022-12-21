@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 name: foodgram_workflow
 on: [push]
 jobs:
@@ -110,3 +111,6 @@ build_and_push_frontend_to_docker_hub:
             Repository: ${{ github.repository }}
 
             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+=======
+
+>>>>>>> 93ac7a36f1a51856b263e70374e1968a08bb0b12
