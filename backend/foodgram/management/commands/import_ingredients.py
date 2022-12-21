@@ -1,9 +1,10 @@
 import os
 
 import psycopg2
-from backend.settings import BASE_DIR
 from django.core.management.base import BaseCommand
 from dotenv import find_dotenv, load_dotenv
+
+from backend.settings import BASE_DIR
 
 load_dotenv(find_dotenv())
 

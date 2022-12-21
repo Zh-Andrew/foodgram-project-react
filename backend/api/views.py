@@ -1,15 +1,16 @@
 from django.db.models import Sum
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
-from foodgram.models import (Amount, FavouriteRecipe, Ingredient, Recipe,
-                             ShoppingList, Tag)
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .filters import RecipeFilterSet, IngredientSearchFilter
+from foodgram.models import (Amount, FavouriteRecipe, Ingredient, Recipe,
+                             ShoppingList, Tag)
+
+from .filters import IngredientSearchFilter, RecipeFilterSet
 from .pagination import LimitPagePagination
 from .permissions import IsAdminOrOwnerOrReadOnly, IsAdminOrReadOnly
 from .serializers import (FavouriteRecipeSerializer, IngredientSerializer,
