@@ -1,12 +1,11 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
+from foodgram.models import (Amount, FavouriteRecipe, Ingredient, Recipe,
+                             ShoppingList, Tag, TagRecipe)
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueTogetherValidator
-
-from foodgram.models import (Amount, FavouriteRecipe, Ingredient, Recipe,
-                             ShoppingList, Tag, TagRecipe)
 from users.models import Subscription, User
 from users.serializers import CustomUserSerializer
 
