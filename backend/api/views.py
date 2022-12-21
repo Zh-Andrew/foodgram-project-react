@@ -120,7 +120,8 @@ class FavouriteRecipeAPI(APIView):
     def delete(self, request, id):
         user = request.user
         recipe = get_object_or_404(Recipe, id=id)
-        favourite_recipe_obj = FavouriteRecipe.objects.filter(user=user, recipe=recipe)
+        favourite_recipe_obj = FavouriteRecipe.objects.filter(
+            user=user, recipe=recipe)
         if favourite_recipe_obj.exists():
             favourite_recipe_obj.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
