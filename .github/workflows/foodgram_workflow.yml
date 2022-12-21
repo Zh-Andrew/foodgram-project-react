@@ -44,7 +44,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:v1.1
 
-build_and_push_frontend_to_docker_hub:
+  build_and_push_frontend_to_docker_hub:
     runs-on: ubuntu-latest
     needs: tests
     steps:
@@ -66,7 +66,6 @@ build_and_push_frontend_to_docker_hub:
           context: ./frontend/
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:v1.1
-
 
   deploy:
     runs-on: ubuntu-latest
