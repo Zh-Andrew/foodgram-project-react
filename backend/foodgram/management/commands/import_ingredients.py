@@ -21,7 +21,7 @@ class Command(BaseCommand):
             )
         )
         cur = conn.cursor()
-        csv_path = '{0}/../data/ingredients.csv'.format(BASE_DIR)
+        csv_path = '{0}/ingredients.csv'.format(BASE_DIR)
         cur.execute(
             "COPY foodgram_ingredient (id, name, measurement_unit) "
             "FROM '{0}' DELIMITER ',' CSV ENCODING 'UTF8' QUOTE '\"'".format(

@@ -1,7 +1,6 @@
 FROM python:3.7-slim
 WORKDIR /app
 COPY requirements.txt .
-RUN pip3 install-r requirements.txt --no-cache-dir
+RUN pip3 install -r requirements.txt --no-cache-dir
 COPY . .
-RUN chmod u+x start.sh
-CMD ["./backend/start.sh"]
+CMD ["gunicorn", "backend.wsgi:application", "--bind", "0:8000" ]
