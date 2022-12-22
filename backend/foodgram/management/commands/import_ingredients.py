@@ -3,7 +3,6 @@ import os
 
 from backend.settings import BASE_DIR
 from django.core.management.base import BaseCommand, CommandError
-
 from foodgram.models import Ingredient
 
 
