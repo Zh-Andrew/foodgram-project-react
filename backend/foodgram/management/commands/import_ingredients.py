@@ -9,7 +9,7 @@ from foodgram.models import Ingredient
 
 class Command(BaseCommand):
     """
-    Добавляем ингредиенты из файла CSV
+    Добавляем ингредиенты из CSV файла
     """
     help = 'loading ingredients from data in json or csv'
 
