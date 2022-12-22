@@ -1,30 +1,32 @@
+import csv
 import os
 
-import psycopg2
-from django.core.management.base import BaseCommand
-from dotenv import find_dotenv, load_dotenv
+from backend.settings import BASE_DIR
+from django.core.management.base import BaseCommand, CommandError
 
-load_dotenv(find_dotenv())
+from foodgram.models import Ingredient
 
 
 class Command(BaseCommand):
-    help = 'Импорт ингредиентов, которые чаще всего употребляются'
+    """
+    Добавляем ингредиенты из файла CSV
+    """
+    help = 'loading ingredients from data in json or csv'
 
-    def handle(self, *args, **kwargs):
-        conn = psycopg2.connect(
-            "host={0} dbname={1} user={2} password={3}".format(
-                os.getenv('DB_HOST'),
-                os.getenv('DB_NAME'),
-                os.getenv('POSTGRES_USER'),
-                os.getenv('POSTGRES_PASSWORD')
-            )
-        )
-        cur = conn.cursor()
-        csv_path = './ingredients.csv'
-        cur.execute(
-            "COPY foodgram_ingredient (id, name, measurement_unit) "
-            "FROM '{0}' DELIMITER ',' CSV ENCODING 'UTF8' QUOTE '\"'".format(
-                csv_path
-            )
-        )
-        conn.commit()
+    def add_arguments(self, parser):
+        parser.add_argument('filename', default='ingredients.csv', nargs='?',
+                            type=str)
+
+    def handle(self, *args, **options):
+        try:
+            with open(os.path.join(BASE_DIR, options['filename']), 'r',
+                      encoding='utf-8') as f:
+                data = csv.reader(f)
+                for row in data:
+                    pk, name, measurement_unit = row
+                    Ingredient.objects.get_or_create(
+                        name=name,
+                        measurement_unit=measurement_unit
+                    )
+        except FileNotFoundError:
+            raise CommandError('Добавьте файл ingredients в директорию data')
