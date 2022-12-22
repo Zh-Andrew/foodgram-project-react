@@ -23,7 +23,6 @@ services:
 
   frontend:
     image: zhirikhinandrew/foodgram_frontend:v1.1
-    restart: always
     volumes:
       - ../frontend/:/app/result_build/
 
